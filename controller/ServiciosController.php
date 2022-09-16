@@ -71,7 +71,7 @@ class ServiciosController {
           $_SESSION['color'] = "rojo";
         }
   
-        header('Location:index.php?c=Servicios&f=view_domicilio_list');
+        require_once VSERVICIOS.'domicilio/domicilio.list.php';
       } 
     }
   }
