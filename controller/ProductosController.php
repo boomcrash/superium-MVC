@@ -92,24 +92,21 @@ class ProductosController {
 
       $exito = $this->model->insert($prod);
 
-      if(!isset($_SESSION)){ 
-        session_start();
+      $msj = 'Producto guardado exitosamente';
+      $color = 'primary';
+      if (!$exito) {
+          $msj = "No se pudo realizar el guardado";
+          $color = "danger";
       }
+      if (!isset($_SESSION)) {
+          session_start();
+      }
+      $_SESSION['mensaje'] = $msj;
+      $_SESSION['color'] = $color;
 
-      if ($exito) {
-        $_SESSION['mensaje'] = "Producto guardado exitosamente!";
-        $_SESSION['color'] = "azul";
-      }else{
-        $_SESSION['mensaje'] = "ERROR: No se pudo guardar el producto. Intentalo de nuevo.";
-        $_SESSION['color'] = "rojo";
-      }      
-    
-      if(($_SESSION['rol']=="cliente") or ($_SESSION['rol']=="marketing")){
-        header('Location:index.php?c=Inicio&f=index');
-      }else{
-        header('Location:index.php?c=Productos&f=view_list');
-      }
       
+    
+      header('Location:index.php?c=Productos&f=view_list');
     } 
   }
 
@@ -155,18 +152,15 @@ class ProductosController {
     $prod->setDisenioId(htmlentities($_REQUEST['id']));
                 
     $exito = $this->model->delete($prod);
-    
-    if(!isset($_SESSION)){ 
-      session_start();
+    $msj = 'Producto eliminado exitosamente';
+    $color = 'primary';
+    if (!$exito) {
+        $msj = "No se pudo eliminar la actualizacion";
+        $color = "danger";
     }
-
-    if ($exito) {
-      $_SESSION['mensaje'] = "Producto eliminado exitosamente!";
-      $_SESSION['color'] = "azul";
-    }else{
-      $_SESSION['mensaje'] = "ERROR: No se pudo eliminar el producto. Intentalo de nuevo.";
-      $_SESSION['color'] = "rojo";
-    }
+    if(!isset($_SESSION)){ session_start();};
+    $_SESSION['mensaje'] = $msj;
+    $_SESSION['color'] = $color;
 
     header('Location:index.php?c=Productos&f=view_list');
   }
@@ -247,17 +241,16 @@ class ProductosController {
       
       $exito = $this->model->update($prod);
       
-      if(!isset($_SESSION)){ 
-        session_start();
+      $msj = 'Producto actualizado exitosamente';
+      $color = 'primary';
+      if (!$exito) {
+          $msj = "No se pudo realizar la actualizacion";
+          $color = "danger";
       }
-  
-      if ($exito) {
-        $_SESSION['mensaje'] = "Producto editado exitosamente!";
-        $_SESSION['color'] = "azul";
-      }else{
-        $_SESSION['mensaje'] = "ERROR: No se pudo editar el producto. Intentalo de nuevo.";
-        $_SESSION['color'] = "rojo";
-      }
+        if(!isset($_SESSION)){ session_start();};
+      $_SESSION['mensaje'] = $msj;
+      $_SESSION['color'] = $color;
+
       
       header('Location:index.php?c=Productos&f=view_list');           
     } 

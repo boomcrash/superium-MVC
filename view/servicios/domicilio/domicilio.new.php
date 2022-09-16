@@ -1,8 +1,4 @@
-<?php // AUTOR: ELIZALDE GAIBOR MILTON ALEXANDER 
-    if(!isset($_SESSION)){ 
-        session_start();
-    }
-?>
+<!--   AUTOR: ELIZALDE GAIBOR MILTON ALEXANDER  -->
 
 <!DOCTYPE html>
 <html lang="es">
@@ -55,12 +51,10 @@
         #correo{
             width: 30%;
         }
-    
 
-        .formulario div{
+        div{
             padding: 10px 0 10px 0;
         }
-        
         .formulario{
             margin-top: 20px;
             display: flex;
@@ -155,7 +149,7 @@
             </section>
             <section class="seccion-segundo">
             <div class="formulario">
-                <form id="myForm" style="display: flex; flex-direction: column;  width: 90% ; " method="POST" action="index.php?c=domicilios&f=view_domicilio_new_producto">
+                <form id="myForm" style="display: flex; flex-direction: column;  width: 90% ; " method="POST" action="index.php?c=servicios&f=view_domicilio_new_producto">
                     <div style="display:flex; flex-direction: row; align-items: center; justify-content: space-between;">
                             <div style="display: flex; flex-direction: column; width: 35%; ">
                                 <label  >Cedula:</label>

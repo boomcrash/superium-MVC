@@ -1,9 +1,4 @@
 <!--   AUTOR: QUITO YAMBAY RUTH MARIA  -->
-<?php 
-    if(!isset($_SESSION)){ 
-        session_start();
-    }
-?> 
 
 <!DOCTYPE html>
 <html lang="es">
@@ -29,7 +24,9 @@
 
 <body>
     <div class="contenedor-principal">
-    <?php require_once HEADER; ?>
+    <?php if(!isset($_SESSION)){ 
+        session_start();
+      };require_once HEADER; ?>
 
 
         <main>

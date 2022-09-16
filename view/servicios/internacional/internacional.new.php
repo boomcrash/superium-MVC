@@ -1,9 +1,4 @@
 <!--   AUTOR: YANEZ GUILLEN PAULA ADRIANA  -->
-<?php 
-    if(!isset($_SESSION)){ 
-        session_start();
-    }
-?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -243,7 +238,7 @@
 
                         <div class="formularios">
                             <!-- onsubmit=return validar() PERMITE LLAMAR A LA FUNCION DE JAVASCRIPT QUE VALIDA EL FORMULARIO-->
-                            <form id="formContacto" method="POST" action="index.php?c=internacional&f=int_new" onsubmit="return validar()">
+                            <form id="formContacto" method="POST" action="index.php?c=Servicios&f=int_new" onsubmit="return validar()">
                                 <div>
                                     <label>Nombres:&nbsp;&nbsp;</label>
                                     <input type="text" name="nombres" id="nombres" class="formItem"
@@ -311,6 +306,8 @@
                         </div>
                     </div>
                 </div>
+
+
     </section>
 
 
@@ -327,7 +324,7 @@
     <script>
 
         let cont = 0;
-        function validar(e) {
+        function validar() {
             // variable para retornar
             var valido = true;
             // obtencion de los elementos a validar
@@ -336,7 +333,7 @@
             var txtDireccion = document.getElementById("direccion");
             var txtTelefono = document.getElementById("telefono");
             var selectDestino = document.getElementById("destino");
-            var radiosVia = document.getElementsByClassName("via");//retorna un arreglo;
+            var radiosVia = document.getElementsByName("via");//retorna un arreglo;
             var radio1 = document.getElementById("v1");
             var chkAcc = document.getElementById("acc1");
             var txtemail = document.getElementById("correo");
@@ -422,11 +419,7 @@
 
 
 
-            if(valido){
-                alert("Formulario enviado exitosamente.");
-            }else{
-                e.preventDefault();
-            }
+            return valido;
         }
 
         function mensaje(cadenaMensaje, elemento) {

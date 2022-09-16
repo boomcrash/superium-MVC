@@ -102,7 +102,7 @@ class ContactoController {
               
         if(!isset($_SESSION)){ 
           session_start();
-        }
+        };
   
         if ($exito) {
           $_SESSION['mensaje'] = "Contacto guardado exitosamente!";
@@ -112,12 +112,7 @@ class ContactoController {
           $_SESSION['color'] = "rojo";
         }
   
-        if(($_SESSION['rol']=="cliente") or ($_SESSION['rol']=="marketing")){
-          header('Location:index.php?c=Inicio&f=index');
-        }else{
-          header('Location:index.php?c=Contacto&f=view_list');
-        }
-       
+        header('Location:index.php?c=Contacto&f=view_list');
       }
     }
 

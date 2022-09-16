@@ -1,9 +1,11 @@
-<?php // AUTOR: ELIZALDE GAIBOR MILTON ALEXANDER  
+<!--  AUTOR: ELIZALDE GAIBOR MILTON ALEXANDER  -->
+
+<?php
 
 class Domicilio {
 
     private $domicilio_id, $cedula, $celular, $correo, $postal, $referencias, 
-    $tipo_envio, $productos, $ciudad,$usuario_id;
+    $tipo_envio, $productos, $ciudad;
 
     function __construct() { }
 
@@ -52,12 +54,6 @@ class Domicilio {
         return $this->referencias;
     }
 
-    function getUsuarioId() {
-        return $this->usuario_id;
-    }
-
-
-
     function setReferencias($referencias) {
         $this->referencias = $referencias;
     }
@@ -86,7 +82,4 @@ class Domicilio {
         $this->ciudad = $ciudad;
     }
 
-    function setUsuarioId($usuario_id) {
-        $this->usuario_id = $usuario_id;
-    }
 }

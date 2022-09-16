@@ -1,4 +1,6 @@
-<?php  // AUTOR: APRAEZ GONZALEZ EMELY MISHELL
+<!--  AUTOR: APRAEZ GONZALEZ EMELY MISHELL  -->
+
+<?php
 
 require_once 'model/dao/ReseniasDAO.php';
 require_once 'model/dto/Resenia.php';
@@ -25,21 +27,31 @@ class ReseniasController {
   }
 
   public function search() {
-    $name = (!empty($_GET["b"]))?htmlentities($_GET["b"]):"";
+    $name = (!empty($_POST["b"]))?htmlentities($_POST["b"]):"";
 
-    if (empty($name)) {            
+    if (empty($name)) {
+      
+      if(!isset($_SESSION)){ 
+        session_start();
+      }
+      $_SESSION['mensaje'] = "ERROR: Debe ingresar un nombre.";
+      $_SESSION['color'] = "rojo";
+      
       $resultados = $this->model->selectAll();
-      array_push($resultados, (object) array('mensaje_error'=>'ERROR: Debe ingresar un nombre.'));     
     
     }else{
       $resultados = $this->model->selectByName($name);
-      
       if (count($resultados)==0) {
+        if(!isset($_SESSION)){ 
+          session_start();
+        }
+        $_SESSION['mensaje'] = "ERROR: Nombre de autor de la reseña no encontrado.";
+        $_SESSION['color'] = "rojo";
         $resultados = $this->model->selectAll();
-        array_push($resultados, (object) array('mensaje_error'=>'ERROR: Nombre de autor de la reseña no encontrado.'));     
-      }          
+      }
     }
-    echo json_encode($resultados);
+    
+    require_once VRESENIAS.'list.php';  
   }
 
 
@@ -54,39 +66,32 @@ class ReseniasController {
 
   public function new() {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        
+      $res = new Resenia();
+      
+      $res->setNombre(htmlentities($_POST['nombre']));
+      $res->setEmail(htmlentities($_POST['email']));
+      $res->setValoracion(htmlentities($_POST['valoracion']));      
+      
+      if (htmlentities($_POST['radio']) == 1) {
+        $res->setServicio("A domicilio");
+      }else if (htmlentities($_POST['radio']) == 2){
+        $res->setServicio("Internacional");
+      }
 
+      $res->setResenia(htmlentities($_POST['nuevaResenia']));
+      
+      if (isset($_POST['recibiremail'])) {
+        $res->setRecibirPromo(1);
+      }else{
+        $res->setRecibirPromo(0);
+      }
+            
+      $exito = $this->model->insert($res);
+            
       if(!isset($_SESSION)){ 
         session_start();
-      }
-      
-      if (!empty($_POST['nombre']) && !empty($_POST['email']) && !empty($_POST['valoracion']) && 
-      !empty($_POST['radio']) && !empty($_POST['nuevaResenia'])) {
-        
-        $res = new Resenia();
-        
-        $res->setUsuarioId($_SESSION['id']);
-        $res->setNombre(htmlentities($_POST['nombre']));
-        $res->setEmail(htmlentities($_POST['email']));
-        $res->setValoracion(htmlentities($_POST['valoracion']));
-        $res->setResenia(htmlentities($_POST['nuevaResenia']));      
-        
-        if (htmlentities($_POST['radio']) == 1) {
-          $res->setServicio("A domicilio");
-        }else if (htmlentities($_POST['radio']) == 2){
-          $res->setServicio("Internacional");
-        }        
-        
-        if (isset($_POST['recibiremail'])) {
-          $res->setRecibirPromo(1);
-        }else{
-          $res->setRecibirPromo(0);
-        }        
-
-        $exito = $this->model->insert($res);
-
-      }else{
-        $exito = false;
-      } 
+      };
 
       if ($exito) {
         $_SESSION['mensaje'] = "Reseña guardada exitosamente!";
@@ -96,11 +101,7 @@ class ReseniasController {
         $_SESSION['color'] = "rojo";
       }
 
-      if(($_SESSION['rol']=="cliente") or ($_SESSION['rol']=="marketing")){
-        header('Location:index.php?c=Inicio&f=index');
-      }else{
-        header('Location:index.php?c=Resenias&f=view_list');
-      }     
+      header('Location:index.php?c=Resenias&f=view_list');
     }
   }
   
@@ -114,43 +115,33 @@ class ReseniasController {
     $res = $this->model->selectById($id);
 
     require_once VRESENIAS.'edit.php';
-    header('Location:index.php?c=Resenias&f=view_list');
-      
   }
 
   public function edit(){
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-      if (!empty($_POST['id']) && !empty($_POST['nombre']) && !empty($_POST['email']) && !empty($_POST['valoracion']) && 
-      !empty($_POST['radio']) && !empty($_POST['nuevaResenia'])) {
  
-        $res = new Resenia();
+      $res = new Resenia();
 
-        $res->setReseniaId(htmlentities($_POST['id']));
-        $res->setNombre(htmlentities($_POST['nombre']));
-        $res->setEmail(htmlentities($_POST['email']));
-        $res->setValoracion(htmlentities($_POST['valoracion']));      
-        $res->setEstado(htmlentities($_POST['radius']));        
-        $res->setResenia(htmlentities($_POST['nuevaResenia']));
-        
-        if (htmlentities($_POST['radio']) == 1) {
-          $res->setServicio("A domicilio");
-        }else if (htmlentities($_POST['radio']) == 2){
-          $res->setServicio("Internacional");
-        }
-        
-        if (isset($_POST['recibiremail'])) {
-          $res->setRecibirPromo(1);
-        }else{
-          $res->setRecibirPromo(0);
-        }
-        
-        $exito = $this->model->update($res);        
+      $res->setReseniaId(htmlentities($_POST['id']));
+      $res->setNombre(htmlentities($_POST['nombre']));
+      $res->setEmail(htmlentities($_POST['email']));
+      $res->setValoracion(htmlentities($_POST['valoracion']));      
       
-      }else{
-        $exito = false;
+      if (htmlentities($_POST['radio']) == 1) {
+        $res->setServicio("A domicilio");
+      }else if (htmlentities($_POST['radio']) == 2){
+        $res->setServicio("Internacional");
       }
 
+      $res->setResenia(htmlentities($_POST['nuevaResenia']));
+      
+      if (isset($_POST['recibiremail'])) {
+        $res->setRecibirPromo(1);
+      }else{
+        $res->setRecibirPromo(0);
+      }
+      
+      $exito = $this->model->update($res);
       if(!isset($_SESSION)){ 
         session_start();
       }
@@ -188,10 +179,8 @@ class ReseniasController {
       $_SESSION['mensaje'] = "Reseña eliminada exitosamente!";
       $_SESSION['color'] = "azul";
     }else{
-      if ( (!isset($_SESSION['mensaje'])) and (!isset($_SESSION['color'])) ){
-        $_SESSION['mensaje'] = "ERROR: No se pudo eliminar la reseña. Intentalo de nuevo.";
-        $_SESSION['color'] = "rojo";
-      }
+      $_SESSION['mensaje'] = "ERROR: No se pudo eliminar la reseña. Intentalo de nuevo.";
+      $_SESSION['color'] = "rojo";
     }
 
     header('Location:index.php?c=Resenias&f=view_list');    

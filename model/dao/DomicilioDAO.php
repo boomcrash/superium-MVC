@@ -1,4 +1,6 @@
-<?php // AUTOR: ELIZALDE GAIBOR MILTON ALEXANDER 
+<!--  AUTOR: ELIZALDE GAIBOR MILTON ALEXANDER  -->
+
+<?php
 
 require_once 'config/Conexion.php';
 
@@ -42,12 +44,9 @@ class DomicilioDAO {
 
     public function insert($prod){
         try{
-            if(!isset($_SESSION)){ 
-                session_start();
-              }
             //sentencia sql
-            $sql = "insert into envio_domicilio(cedula, celular, correo, postal, referencias,tipo_envio, productos,ciudad,usuario_id) ".
-            "values(:cedula, :celular,:correo, :postal, :referencias, :gen,:env,:cities,:usuario_id)";
+            $sql = "insert into envio_domicilio(cedula, celular, correo, postal, referencias,tipo_envio, productos,ciudad) ".
+            "values(:cedula, :celular,:correo, :postal, :referencias, :gen,:env,:cities )";
             echo $sql;
             //bind parameters
             $sentencia = $this->con->prepare($sql);
@@ -59,8 +58,7 @@ class DomicilioDAO {
                 'referencias' =>$prod->getReferencias(),
                 'gen' =>$prod->getTipoEnvio(),
                 'env' => $prod->getProductos(),
-                'cities'=>$prod->getCiudad(),
-                'usuario_id'=>$_SESSION['id']
+                'cities'=>$prod->getCiudad()
             ];
             //execute
             $sentencia->execute($data);
@@ -108,7 +106,7 @@ class DomicilioDAO {
         try{
             $sql = "UPDATE envio_domicilio SET cedula = :cedula, celular = :celular, correo = :correo, 
                                                postal = :postal, referencias = :referencias, tipo_envio = :tipo_envio, 
-                                               productos = :productos, ciudad = :ciudad, usuario_id=:usuario_id WHERE domicilio_id = :id";
+                                               productos = :productos, ciudad = :ciudad WHERE domicilio_id = :id";
 
             $sentencia = $this->con->prepare($sql);
             $data = [
@@ -120,8 +118,7 @@ class DomicilioDAO {
             'referencias' =>  $prod->getReferencias(),
             'tipo_envio' =>  $prod->getTipoEnvio(),
             'productos' =>  $prod->getProductos(),
-            'ciudad' =>  $prod->getCiudad(),
-            'usuario_id'=> $prod->getUsuarioId(),
+            'ciudad' =>  $prod->getCiudad()
             ];
             $sentencia->execute($data);
 

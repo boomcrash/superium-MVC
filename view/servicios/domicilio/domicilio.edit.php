@@ -1,9 +1,4 @@
 <!--   AUTOR: ELIZALDE GAIBOR MILTON ALEXANDER  -->
-<?php 
-    if(!isset($_SESSION)){ 
-        session_start();
-    }
-?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -154,9 +149,8 @@
             </section>
             <section class="seccion-segundo">
                 <div class="formulario">
-                    <form id="myForm" style="display: flex; flex-direction: column;  width: 90% ; " method="POST" action="index.php?c=domicilios&f=view_domicilio_edit_producto">
-                    <input type="hidden" name="usuario_id" id="id" value="<?php echo $prod->usuario_id; ?>"/>    
-                    <input type="hidden" name="id" id="id" value="<?php echo $prod->domicilio_id; ?>"/>
+                    <form id="myForm" style="display: flex; flex-direction: column;  width: 90% ; " method="POST" action="index.php?c=servicios&f=view_domicilio_edit_producto">
+                        <input type="hidden" name="id" id="id" value="<?php echo $prod->domicilio_id; ?>"/>
                         <div style="display:flex; flex-direction: row; align-items: center; justify-content: space-between;">
                             <div style="display: flex; flex-direction: column; width: 35%; ">
                                 <label  >Cedula:</label>
@@ -216,11 +210,11 @@
                                         }
                                     }
                                     ?>                                    
-                                    <input class="env" type="checkbox" value="Camisas" name="env[]" <?php echo $camisas; ?>/>Camisas
-                                    <input class="env" type="checkbox" value="Tazas" name="env[]" <?php echo $tazas; ?>/>Tazas
-                                    <input class="env" type="checkbox" value="Abrigos" name="env[]" <?php echo $abrigos; ?>/>Abrigos
-                                    <input class="env" type="checkbox" value="Gorros" name="env[]" <?php echo $gorros; ?>/>Gorros
-                                    <input class="env" type="checkbox" value="Bolsos" name="env[]" <?php echo $bolsos; ?>/>Bolsos
+                                    <input type="checkbox" value="Camisas" name="env[]" <?php echo $camisas; ?>/>Camisas
+                                    <input type="checkbox" value="Tazas" name="env[]" <?php echo $tazas; ?>/>Tazas
+                                    <input type="checkbox" value="Abrigos" name="env[]" <?php echo $abrigos; ?>/>Abrigos
+                                    <input type="checkbox" value="Gorros" name="env[]" <?php echo $gorros; ?>/>Gorros
+                                    <input type="checkbox" value="Bolsos" name="env[]" <?php echo $bolsos; ?>/>Bolsos
                                 </div>                            
                             </div>
                         </div>
@@ -276,7 +270,7 @@
                         <textarea name="referencias" id="area_referencias"><?php echo $prod->referencias; ?></textarea>
                         <div style="display: flex; align-items: flex-end; justify-content: center;">
                             <input type="submit">
-                            <a href="index.php?c=domicilios&f=view_domicilio_list"><input class="btnCancelar" type="button" value="CANCELAR"></a>
+                            <a href="index.php?c=servicios&f=view_domicilio_list"><input class="btnCancelar" type="button" value="CANCELAR"></a>
                         </div>                            
                     </form>                                
                 </div>
@@ -301,7 +295,7 @@
         var correo=document.getElementById("correo");
         var postal=document.getElementById("postal");
         var envio=document.getElementsByName("gen");
-        var productos=document.queryselectorAll(".env");
+        var productos=document.getElementsByName("env");
         var ciudades=document.getElementById("ciudad");
         var referencia=document.getElementById("area_referencias");
         let arreglo_errores=[];
@@ -339,14 +333,14 @@
                 }
             }
             let auxCheck=false;
-            
+            console.log(check);
             for(check of productos){
                 if(check.checked){
                     console.log(check);
                     auxCheck=true; 
                 }
             }
-            console.log(auxCheck);
+          
             if(auxOption==false){valido=false; arreglo_errores.push("tipo_envio");}
             if(auxCheck==false){valido=false; arreglo_errores.push("productos");}
             if(referencia.value.length==0){colorear(referencia);valido=false; arreglo_errores.push("referencias");}
@@ -360,6 +354,7 @@
             if(valido==true){
                 alert("SU FORMULARIO SE ENVIO EXITOSAMENTE");
             }else{
+                
                 alert("ERROR: RELLENE CORRECTAMENTE LOS SIGUIENTES CAMPOS.");
                 let errores;
                 for(dato of arreglo_errores){
