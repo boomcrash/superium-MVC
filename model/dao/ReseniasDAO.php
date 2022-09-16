@@ -1,6 +1,4 @@
-<!--  AUTOR: APRAEZ GONZALEZ EMELY MISHELL  -->
-
-<?php
+<?php  // AUTOR: APRAEZ GONZALEZ EMELY MISHELL
 
 require_once 'config/Conexion.php';
 
@@ -27,7 +25,7 @@ class ReseniasDAO {
     /*--  CONSULTAR RESEÑA  --*/
 
     public function selectAll() {      
-        $sql = "SELECT * FROM resenia";
+        $sql = "SELECT * FROM resenia, usuario WHERE usuario_id = id_usuario";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
         $resultados = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -36,7 +34,7 @@ class ReseniasDAO {
     }
 
     public function selectByName($name) { 
-        $sql = "SELECT * FROM resenia WHERE (nombre like :name)";
+        $sql = "SELECT * FROM resenia, usuario WHERE (nombre like :name AND usuario_id = id_usuario)";
         $stmt = $this->con->prepare($sql);
         $conlike = '%' . $name . '%';
         $data = array('name' => $conlike);
@@ -53,8 +51,8 @@ class ReseniasDAO {
 
     public function insert($res) {
         try{
-            $sql = "INSERT INTO resenia (nombre, email, valoracion, servicio, resenia, recibir_promo) VALUES 
-            (:nombre, :email,:valoracion, :servicio, :nuevaResenia, :recibiremail)";
+            $sql = "INSERT INTO resenia (nombre, email, valoracion, servicio, resenia, recibir_promo, usuario_id) VALUES 
+            (:nombre, :email,:valoracion, :servicio, :nuevaResenia, :recibiremail, :usuario_id)";
         
             $sentencia = $this->con->prepare($sql);
             $data = [
@@ -63,7 +61,8 @@ class ReseniasDAO {
                 'valoracion' =>  $res->getValoracion(),
                 'servicio' =>  $res->getServicio(),
                 'nuevaResenia' =>  $res->getResenia(),
-                'recibiremail' =>  $res->getRecibirPromo()
+                'recibiremail' =>  $res->getRecibirPromo(),
+                'usuario_id' =>  $res->getUsuarioId()
             ];
             $sentencia->execute($data);
             
@@ -95,7 +94,7 @@ class ReseniasDAO {
     public function update($res){
         try{
             $sql = "UPDATE resenia SET nombre = :nombre, email = :email, valoracion = :valoracion, servicio = :servicio, 
-                                       resenia = :nuevaResenia, recibir_promo = :recibiremail WHERE resenia_id=:id";
+                                       resenia = :nuevaResenia, recibir_promo = :recibiremail, estado = :estado WHERE resenia_id=:id";
 
             $sentencia = $this->con->prepare($sql);
             $data = [            
@@ -105,6 +104,7 @@ class ReseniasDAO {
                 'servicio' =>  $res->getServicio(),
                 'nuevaResenia' =>  $res->getResenia(),
                 'recibiremail' =>  $res->getRecibirPromo(),
+                'estado' =>  $res->getEstado(),
                 'id' =>  $res->getReseniaId()
             ];
             $sentencia->execute($data);
@@ -124,15 +124,30 @@ class ReseniasDAO {
     /*--  ELIMINAR RESEÑA  --*/
 
     public function delete($res){
-        try{        
-            $sql = "DELETE FROM resenia WHERE resenia_id = :id";
-            $sentencia = $this->con->prepare($sql); 
-            $data = ['id' =>  $res->getReseniaId()];
-            $sentencia->execute($data);
-   
-            if ($sentencia->rowCount() <= 0) {
+        try{  
+            // Para que NO permita eliminar una reseña publicada (estado = 1)
+            $resultado = $this->selectById($res->getReseniaId());           
+            
+            if ($resultado->estado == "0"){
+                          
+                $sql = "DELETE FROM resenia WHERE resenia_id = :id";
+                $sentencia = $this->con->prepare($sql); 
+                $data = ['id' =>  $res->getReseniaId()];
+                $sentencia->execute($data);
+    
+                if ($sentencia->rowCount() <= 0) {
+                    return false;
+                }      
+
+            }else{                                  
+                if(!isset($_SESSION)){ 
+                    session_start();
+                }
+                $_SESSION['mensaje'] = "ERROR: No puede eliminar una reseña publicada.";
+                $_SESSION['color'] = "rojo";
                 return false;
             }
+            
         }catch(Exception $e){
             return false;
         }
