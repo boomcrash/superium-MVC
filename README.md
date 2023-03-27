@@ -1,1 +1,4 @@
 # PROYECTO CON PATRON MVC DESARROLLADO CON HTML CSS PHP Y CONEXION A BASE DE DATOS
+
+
+![image](https://user-images.githubusercontent.com/64045193/227830746-da3ce156-0a72-4781-b520-fa216bcb8a12.png)
